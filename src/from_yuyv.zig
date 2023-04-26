@@ -1,13 +1,14 @@
 const std = @import("std");
 
-pub fn yuyvToI420(yuyv_data: []const u8, yuv420_data: []u8, width: u32, height: u32) void {
-    if (width & 1 != 0 or height & 1 != 0) {
-        std.log.err("width and hight must be even number: width={d}, height={d}", .{ width, height });
-        unreachable;
-    }
-    const y_plane = yuv420_data[0..(width * height)];
-    const u_plane = yuv420_data[(width * height)..(width * height + width * height / 4)];
-    const v_plane = yuv420_data[(width * height + width * height / 4)..];
+pub fn yuyvToI420(yuyv_data: []const u8, i420_data: []u8, width: u32, height: u32) void {
+    std.debug.assert(width & 1 == 0);
+    std.debug.assert(height & 1 == 0);
+    std.debug.assert(yuyv_data.len >= width * height * 2);
+    std.debug.assert(i420_data.len >= (width * height * 3) / 2);
+
+    const y_plane = i420_data[0..(width * height)];
+    const u_plane = i420_data[(width * height)..(width * height + width * height / 4)];
+    const v_plane = i420_data[(width * height + width * height / 4)..];
 
     var uv_idx: usize = 0;
 
