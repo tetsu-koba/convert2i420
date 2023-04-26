@@ -13,14 +13,13 @@ pub fn nv12ToI420(nv12_data: []const u8, i420_data: []u8, width: u32, height: u3
     std.mem.copy(u8, i420_data[0..Y_size], nv12_data[0..Y_size]);
 
     // Separate the U and V planes
+    const u_plane = i420_data[Y_size..(Y_size + Y_size / 4)];
+    const v_plane = i420_data[(Y_size + Y_size / 4)..];
+    const nv12_uv_plane = nv12_data[Y_size..];
+
     var i: usize = 0;
-    var j: usize = Y_size;
-
-    while (i < UV_size) {
-        i420_data[Y_size + i / 2] = nv12_data[j]; // U plane
-        i420_data[Y_size + UV_size / 2 + i / 2] = nv12_data[j + 1]; // V plane
-
-        i += 2;
-        j += 2;
+    while (i < UV_size) : (i += 2) {
+        u_plane[i / 2] = nv12_uv_plane[i];
+        v_plane[i / 2] = nv12_uv_plane[i + 1];
     }
 }
