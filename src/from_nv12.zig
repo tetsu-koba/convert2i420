@@ -17,6 +17,7 @@ pub fn nv12ToI420(nv12_data: []const u8, i420_data: []u8, width: u32, height: u3
     const v_plane = i420_data[(Y_size + Y_size / 4)..];
     const nv12_uv_plane = nv12_data[Y_size..];
 
+    @setRuntimeSafety(false);
     var i: usize = 0;
     while (i < UV_size) : (i += 2) {
         u_plane[i / 2] = nv12_uv_plane[i];

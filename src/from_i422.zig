@@ -17,6 +17,7 @@ pub fn i422ToI420(i422_data: []const u8, i420_data: []u8, width: u32, height: u3
     const i422_u_plane = i422_data[Y_size..(Y_size + Y_size / 2)];
     const i422_v_plane = i422_data[(Y_size + Y_size / 2)..];
 
+    @setRuntimeSafety(false);
     var y: usize = 0;
     while (y < height) : (y += 2) {
         var i: usize = 0;

@@ -12,6 +12,7 @@ pub fn yuyvToI420(yuyv_data: []const u8, i420_data: []u8, width: u32, height: u3
 
     var uv_idx: usize = 0;
     var y: usize = 0;
+    @setRuntimeSafety(false);
     while (y < height) : (y += 1) {
         var x: usize = 0;
         while (x < width) : (x += 2) {
