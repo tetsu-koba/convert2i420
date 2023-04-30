@@ -35,7 +35,7 @@ pub fn main() !void {
     var input_data: []u8 = undefined;
 
     if (std.mem.eql(u8, fmt, "YUYV")) {
-        input_data = try alc.alloc(u8, width * height * 3 / 2);
+        input_data = try alc.alloc(u8, width * height * 2);
         f = yuyv.yuyvToI420;
     } else if (std.mem.eql(u8, fmt, "NV12")) {
         input_data = try alc.alloc(u8, width * height * 3 / 2);
