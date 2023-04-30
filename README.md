@@ -17,6 +17,20 @@ Video width and height must be an even number. Each line has no padding.
 
 See test files.
 
+## Example
+
+```
+#!/bin/sh -eux
+
+WIDTH=320
+HEIGHT=240
+FRAMERATE=15
+
+v4l2capture /dev/video0 /dev/stdout $WIDTH $HEIGHT $FRAMERATE YUYV | \
+convert2i420 /dev/stdin /dev/stdout $WIDTH $HEIGHT YUYV | \
+ffplay -f rawvideo -pixel_format yuv420p -video_size ${WIDTH}x${HEIGHT} /dev/stdin
+```
+
 ## ToDo
 
 Make this into a package when the official zig package manager is released.
