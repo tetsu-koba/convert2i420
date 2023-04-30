@@ -54,6 +54,12 @@ pub fn main() !void {
             break;
         }
         f(input_data, output_data, width, height);
-        try outfile.writeAll(output_data);
+        outfile.writeAll(output_data) catch |err| {
+            if (err == error.BrokenPipe) {
+                break;
+            } else {
+                return err;
+            }
+        };
     }
 }
