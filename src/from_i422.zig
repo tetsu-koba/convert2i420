@@ -19,17 +19,17 @@ pub fn i422ToI420(i422_data: []const u8, i420_data: []u8, width: u32, height: u3
 
     @setRuntimeSafety(false);
     var y: usize = 0;
-    while (y < height) : (y += 2) {
+    while (y < (height / 2)) : (y += 1) {
         var i: usize = 0;
-        while (i < width) : (i += 1) {
-            u_plane[i] = i422_u_plane[i];
+        while (i < (width / 2)) : (i += 1) {
+            u_plane[(y * width / 2) + i] = i422_u_plane[(y * width) + i];
         }
     }
     y = 0;
-    while (y < height) : (y += 2) {
+    while (y < (height / 2)) : (y += 1) {
         var i: usize = 0;
-        while (i < width) : (i += 1) {
-            v_plane[i] = i422_v_plane[i];
+        while (i < (width / 2)) : (i += 1) {
+            v_plane[(y * width / 2) + i] = i422_v_plane[(y * width) + i];
         }
     }
 }
