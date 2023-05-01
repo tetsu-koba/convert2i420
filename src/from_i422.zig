@@ -3,8 +3,8 @@ const std = @import("std");
 pub fn i422ToI420(i422_data: []const u8, i420_data: []u8, width: u32, height: u32) void {
     std.debug.assert(width & 1 == 0);
     std.debug.assert(height & 1 == 0);
-    std.debug.assert(i422_data.len >= (width * height * 3) / 2);
-    std.debug.assert(i420_data.len >= (width * height * 3) / 2);
+    std.debug.assert(i422_data.len >= width * height * 2);
+    std.debug.assert(i420_data.len >= width * height * 3 / 2);
 
     const Y_size = width * height;
 
