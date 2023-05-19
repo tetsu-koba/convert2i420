@@ -17,13 +17,13 @@ pub fn main() !void {
         std.debug.print("Usage: {s} input_file output_file width height pixelformat\n", .{args[0]});
         std.os.exit(1);
     }
-    var infile = try std.fs.cwd().openFile(std.mem.sliceTo(args[1], 0), .{});
+    var infile = try std.fs.cwd().openFile(args[1], .{});
     defer infile.close();
-    var outfile = try std.fs.cwd().createFile(std.mem.sliceTo(args[2], 0), .{});
+    var outfile = try std.fs.cwd().createFile(args[2], .{});
     defer outfile.close();
     const width = try std.fmt.parseInt(u32, args[3], 10);
     const height = try std.fmt.parseInt(u32, args[4], 10);
-    const pixel_format = std.mem.sliceTo(args[5], 0);
+    const pixel_format = args[5];
 
     var output_data = try alc.alloc(u8, width * height * 3 / 2);
     defer alc.free(output_data);
