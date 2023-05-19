@@ -7,8 +7,10 @@ const expect = std.testing.expect;
 const yuyv = @import("from_yuyv.zig");
 const nv12 = @import("from_nv12.zig");
 const i422a = @import("from_i422.zig");
+const pip = @import("set_pipe_size.zig");
 
 pub fn main() !void {
+    var isPipe = false;
     const alc = std.heap.page_allocator;
     const args = try std.process.argsAlloc(alc);
     defer std.process.argsFree(alc, args);
@@ -21,6 +23,11 @@ pub fn main() !void {
     defer infile.close();
     var outfile = try std.fs.cwd().createFile(args[2], .{});
     defer outfile.close();
+    if (try pip.isPipe(outfile.handle)) {
+        isPipe = true;
+        try pip.setPipeMaxSize(outfile.handle);
+    }
+
     const width = try std.fmt.parseInt(u32, args[3], 10);
     const height = try std.fmt.parseInt(u32, args[4], 10);
     const pixel_format = args[5];
