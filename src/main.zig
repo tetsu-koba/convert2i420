@@ -7,7 +7,6 @@ const expect = std.testing.expect;
 const yuyv = @import("from_yuyv.zig");
 const nv12 = @import("from_nv12.zig");
 const i422a = @import("from_i422.zig");
-const pip = @import("set_pipe_size.zig");
 
 pub fn main() !void {
     var isPipe = false;
@@ -23,9 +22,12 @@ pub fn main() !void {
     defer infile.close();
     var outfile = try std.fs.cwd().createFile(args[2], .{});
     defer outfile.close();
-    if (try pip.isPipe(outfile.handle)) {
-        isPipe = true;
-        try pip.setPipeMaxSize(outfile.handle);
+    if (@import("builtin").os.tag == .linux) {
+        const pip = @import("set_pipe_size.zig");
+        if (try pip.isPipe(outfile.handle)) {
+            isPipe = true;
+            try pip.setPipeMaxSize(outfile.handle);
+        }
     }
 
     const width = try std.fmt.parseInt(u32, args[3], 10);
