@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const fs = std.fs;
 const mem = std.mem;
 const testing = std.testing;
@@ -22,7 +23,7 @@ pub fn main() !void {
     defer infile.close();
     var outfile = try std.fs.cwd().createFile(args[2], .{});
     defer outfile.close();
-    if (@import("builtin").os.tag == .linux) {
+    if (builtin.os.tag == .linux) {
         const pip = @import("set_pipe_size.zig");
         if (try pip.isPipe(outfile.handle)) {
             isPipe = true;
@@ -63,12 +64,22 @@ pub fn main() !void {
             break;
         }
         f(input_data, output_data, width, height);
-        outfile.writeAll(output_data) catch |err| {
-            if (err == error.BrokenPipe) {
-                break;
-            } else {
-                return err;
-            }
-        };
+        if (builtin.os.tag == .linux and isPipe) {
+            @import("vmsplice.zig").vmspliceSingleBuffer(output_data, outfile.handle) catch |err| {
+                if (err == error.BrokenPipe) {
+                    break;
+                } else {
+                    return err;
+                }
+            };
+        } else {
+            outfile.writeAll(output_data) catch |err| {
+                if (err == error.BrokenPipe) {
+                    break;
+                } else {
+                    return err;
+                }
+            };
+        }
     }
 }
