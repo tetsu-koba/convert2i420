@@ -14,12 +14,12 @@ fn getErrno() c_int {
 
 pub fn vmspliceSingleBuffer(buf: []const u8, fd: os.fd_t) !void {
     var iov: c.struct_iovec = .{
-        .iov_base = @ptrCast(?*anyopaque, @constCast(buf.ptr)),
+        .iov_base = @ptrCast(@constCast(buf.ptr)),
         .iov_len = buf.len,
     };
     var n: isize = undefined;
     while (true) {
-        n = c.vmsplice(fd, &iov, 1, @bitCast(c_uint, c.SPLICE_F_GIFT));
+        n = c.vmsplice(fd, &iov, 1, @bitCast(c.SPLICE_F_GIFT));
         if (n < 0) {
             const errno = getErrno();
             switch (errno) {
@@ -33,13 +33,13 @@ pub fn vmspliceSingleBuffer(buf: []const u8, fd: os.fd_t) !void {
                     std.log.err("vmsplice: errno={d}", .{errno});
                 },
             }
-        } else if (@bitCast(usize, n) == iov.iov_len) {
+        } else if (iov.iov_len == @as(usize, @bitCast(n))) {
             return;
         } else if (n != 0) {
             //std.log.info("vmsplice: return value mismatch: n={d}, iov_len={d}", .{ n, iov.iov_len });
-            const un = @bitCast(usize, n);
+            const un: usize = @bitCast(n);
             iov.iov_len -= un;
-            iov.iov_base = @ptrFromInt(?*anyopaque, @intFromPtr(iov.iov_base) + un);
+            iov.iov_base = @ptrFromInt(@intFromPtr(iov.iov_base) + un);
             continue;
         }
         return error.vmsplice;
