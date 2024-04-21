@@ -17,7 +17,7 @@ pub fn main() !void {
 
     if (args.len < 5) {
         std.debug.print("Usage: {s} input_file output_file width height pixelformat\n", .{args[0]});
-        std.os.exit(1);
+        std.posix.exit(1);
     }
     var infile = try std.fs.cwd().openFile(args[1], .{});
     defer infile.close();
@@ -35,7 +35,7 @@ pub fn main() !void {
     const height = try std.fmt.parseInt(u32, args[4], 10);
     const pixel_format = args[5];
 
-    var output_data = try alc.alloc(u8, width * height * 3 / 2);
+    const output_data = try alc.alloc(u8, width * height * 3 / 2);
     defer alc.free(output_data);
 
     var fmt = try alc.alloc(u8, pixel_format.len);
@@ -55,7 +55,7 @@ pub fn main() !void {
         f = i422a.i422ToI420;
     } else {
         std.log.err("Doesn't support {s}", .{pixel_format});
-        std.os.exit(1);
+        std.posix.exit(1);
     }
     defer alc.free(input_data);
 

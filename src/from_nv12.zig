@@ -10,7 +10,7 @@ pub fn nv12ToI420(nv12_data: []const u8, i420_data: []u8, width: u32, height: u3
     const UV_size = Y_size / 2;
 
     // Copy the Y plane
-    std.mem.copy(u8, i420_data[0..Y_size], nv12_data[0..Y_size]);
+    std.mem.copyForwards(u8, i420_data[0..Y_size], nv12_data[0..Y_size]);
 
     // Separate the U and V planes
     const u_plane = i420_data[Y_size..(Y_size + Y_size / 4)];

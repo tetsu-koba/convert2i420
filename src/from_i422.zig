@@ -9,7 +9,7 @@ pub fn i422ToI420(i422_data: []const u8, i420_data: []u8, width: u32, height: u3
     const Y_size = width * height;
 
     // Copy the Y plane
-    std.mem.copy(u8, i420_data[0..Y_size], i422_data[0..Y_size]);
+    std.mem.copyForwards(u8, i420_data[0..Y_size], i422_data[0..Y_size]);
 
     // Copy the U and V planes
     const u_plane = i420_data[Y_size..(Y_size + Y_size / 4)];
